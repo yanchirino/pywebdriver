@@ -6,6 +6,7 @@ on:
   push:
     branches: [master]
     tags: ["v*.*.*"]
+  workflow_dispatch:
 
 jobs:
   pre-commit:
@@ -13,14 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - uses: pre-commit/action@v3.0.1
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: "3.12"
       - name: Install dependencies
         run: |
           python -m pip install virtualenv wheel
@@ -43,8 +46,16 @@ jobs:
           iscc.exe windows/setup.iss
           move windows/Output/pywebdriver_win64_installer.exe .
           7z a pywebdriver_win64.zip dist/pywebdriver
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pywebdriver-windows-installer
+          path: |
+            pywebdriver_win64_installer.exe
+            pywebdriver_win64.zip
+          retention-days: 30
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
@@ -55,8 +66,10 @@ jobs:
   build-jammy:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Install dependencies
         run: |
           sudo apt --yes update
@@ -68,24 +81,32 @@ jobs:
           debuild
       - name: Test build
         run: |
-          mv ../pywebdriver_$(date +%Y%m%d)_amd64.deb ../pywebdriver_jammy.deb
-          sudo dpkg -i ../pywebdriver_jammy.deb
+          mv ../pywebdriver_$(date +%Y%m%d)_amd64.deb pywebdriver_jammy.deb
+          sudo dpkg -i pywebdriver_jammy.deb
           sh debian/replace_snakeoil_mkcert.sh
           sudo journalctl -u pywebdriver
           sudo service pywebdriver status
+      - name: Upload deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pywebdriver-jammy-deb
+          path: pywebdriver_jammy.deb
+          retention-days: 30
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ../pywebdriver_jammy.deb
+            pywebdriver_jammy.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-noble:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
       - name: Install dependencies
         run: |
           sudo apt --yes update
@@ -97,16 +118,22 @@ jobs:
           debuild
       - name: Test build
         run: |
-          mv ../pywebdriver_$(date +%Y%m%d)_amd64.deb ../pywebdriver_noble.deb
-          sudo dpkg -i ../pywebdriver_noble.deb
+          mv ../pywebdriver_$(date +%Y%m%d)_amd64.deb pywebdriver_noble.deb
+          sudo dpkg -i pywebdriver_noble.deb
           sh debian/replace_snakeoil_mkcert.sh
           sudo journalctl -u pywebdriver
           sudo service pywebdriver status
+      - name: Upload deb artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pywebdriver-noble-deb
+          path: pywebdriver_noble.deb
+          retention-days: 30
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ../pywebdriver_noble.deb
+            pywebdriver_noble.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
