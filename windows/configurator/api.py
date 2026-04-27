@@ -9,7 +9,7 @@ import sys
 import traceback
 
 from . import config_io, hardware, service, ssl_setup
-from .drivers_meta import DRIVERS, windows_drivers
+from .drivers_meta import windows_drivers
 
 
 def _ok(data=None):
@@ -123,10 +123,16 @@ class Api:
             try:
                 service.install(self.app_dir, autostart=options.get("autostart", True))
                 result["steps"].append(
-                    {"name": "service", "ok": True, "status": service.status(self.app_dir)}
+                    {
+                        "name": "service",
+                        "ok": True,
+                        "status": service.status(self.app_dir),
+                    }
                 )
             except Exception as exc:
-                result["steps"].append({"name": "service", "ok": False, "error": str(exc)})
+                result["steps"].append(
+                    {"name": "service", "ok": False, "error": str(exc)}
+                )
 
         result["finished"] = True
         if self.on_finish:

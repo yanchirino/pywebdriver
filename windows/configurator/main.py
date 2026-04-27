@@ -118,19 +118,37 @@ def run_gui(app_path):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="PyWebDriver configurator")
-    parser.add_argument("--silent", action="store_true",
-                        help="Run without GUI (write defaults and optionally install service)")
+    parser.add_argument(
+        "--silent",
+        action="store_true",
+        help="Run without GUI (write defaults and optionally install service)",
+    )
     parser.add_argument("--locale", default="es", help="Locale for silent mode (es/en)")
-    parser.add_argument("--install-service", action="store_true",
-                        help="Install Windows service in silent mode")
-    parser.add_argument("--no-autostart", action="store_true",
-                        help="Do not autostart service when installing")
-    parser.add_argument("--generate-ssl", action="store_true",
-                        help="Generate SSL certificates with mkcert in silent mode")
-    parser.add_argument("--uninstall", action="store_true",
-                        help="Remove the Windows service (used by InnoSetup uninstaller)")
-    parser.add_argument("--remove-ssl", action="store_true",
-                        help="With --uninstall: also remove mkcert root CA from trust store")
+    parser.add_argument(
+        "--install-service",
+        action="store_true",
+        help="Install Windows service in silent mode",
+    )
+    parser.add_argument(
+        "--no-autostart",
+        action="store_true",
+        help="Do not autostart service when installing",
+    )
+    parser.add_argument(
+        "--generate-ssl",
+        action="store_true",
+        help="Generate SSL certificates with mkcert in silent mode",
+    )
+    parser.add_argument(
+        "--uninstall",
+        action="store_true",
+        help="Remove the Windows service (used by InnoSetup uninstaller)",
+    )
+    parser.add_argument(
+        "--remove-ssl",
+        action="store_true",
+        help="With --uninstall: also remove mkcert root CA from trust store",
+    )
     args = parser.parse_args(argv)
 
     app_path = app_dir()

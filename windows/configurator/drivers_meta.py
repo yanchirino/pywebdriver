@@ -55,7 +55,10 @@ DRIVERS = [
             },
             {
                 "key": "printer_names",
-                "label": {"es": "Nombres de impresora (Win32, comodines OK)", "en": "Printer names (Win32, wildcards OK)"},
+                "label": {
+                    "es": "Nombres de impresora (Win32, comodines OK)",
+                    "en": "Printer names (Win32, wildcards OK)",
+                },
                 "type": "text",
                 "default": "EPSON TM*",
                 "depends_on": {"device_type": "win32"},
@@ -128,7 +131,10 @@ DRIVERS = [
     },
     {
         "key": "telium_driver",
-        "label": {"es": "Terminal de pago Ingenico/Telium", "en": "Ingenico/Telium payment terminal"},
+        "label": {
+            "es": "Terminal de pago Ingenico/Telium",
+            "en": "Ingenico/Telium payment terminal",
+        },
         "description": {
             "es": "Terminal de pago con protocolo Telium 3 (Ingenico, Sagem).",
             "en": "Payment terminal using Telium 3 protocol (Ingenico, Sagem).",
